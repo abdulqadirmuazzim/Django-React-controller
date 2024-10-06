@@ -1,0 +1,20 @@
+webpack takes all our javascript and bundles it into one file
+
+bable transpiles our js and jsx code to work on older browsers
+
+fail to install some packages:
+@material-ui/core,
+@material-ui/icons,
+
+
+for content of files babel.config.json and webpack...
+here is the source code links:
+
+babel.config.json:
+https://github.com/techwithtim/Music-Controller-Web-App-Tutorial/blob/main/Tutorial%201%20-%204/frontend/babel.config.json
+
+package.json: 
+https://www.youtube.com/redirect?event=video_description&redir_token=QUFFLUhqa3RGckZDUlNQSS1YQWJCV1Z5YkZDR0FkUHJRQXxBQ3Jtc0ttUDBBSTRaNW1xalcybVJ5d3ItNmxsdWFhRVFxR3dLQjJFbl9QRk5IVmtLMzZveWVQVHFpUFhDV2xrQV9mR3MzeW11Xy1UU0VSWkpoQ1M5QjJxT2RLZFFucmFORVJmaEVzV1U4MXhBdl9ZNl9qZ3dBWQ&q=https%3A%2F%2Fgithub.com%2Ftechwithtim%2FMusic-Controller-Web-App-Tutorial%2Fblob%2Fmain%2FTutorial%25201%2520-%25204%2Ffrontend%2Fpackage.json&v=6c2NqDyxppU
+
+webpack.config.json:
+https://github.com/techwithtim/Music-Controller-Web-App-Tutorial/blob/main/Tutorial%201%20-%204/frontend/package.json
