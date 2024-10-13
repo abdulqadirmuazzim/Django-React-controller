@@ -5,4 +5,5 @@ urlpatterns = [
     path("", v.index, name="Home"),
     path("join", v.index),
     path("create", v.index),
+    path("room/<str:roomcode>", v.index),
 ]

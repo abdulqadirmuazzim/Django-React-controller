@@ -10,6 +10,7 @@ import {Link} from "react-router-dom"
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
+import {useNavigate} from "react-router-dom"
 
 function CreateRoom() {
 
@@ -31,6 +32,8 @@ function CreateRoom() {
       guestCanPause: e.target.value === "" && true,
     })
   }
+  
+  const history = useNavigate();
 
   const handleButtonClicked = ()=>{
     const Params = {
@@ -41,7 +44,9 @@ function CreateRoom() {
         guest_pause: state.guestCanPause
       })
     }
-    fetch("apis/create", Params).then((res)=>res.json()).then(data=>console.log(data)).catch(err=>console.log(err))
+    fetch("apis/create", Params).then((res)=>res.json()).then(data=>{
+      history(`/room/${data.code}`)
+    }).catch(err=>console.log(err))
   }
   
   return (
