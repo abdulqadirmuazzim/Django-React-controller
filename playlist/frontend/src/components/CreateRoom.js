@@ -1,15 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
-import Button from "@mui/material/Button"
-import Grid from "@mui/material/Grid"
-import Typography from '@mui/material/Typography'
-import TextField from '@mui/material/TextField'
-import FormHelperText from '@mui/material/FormHelperText'
-import FormControl from '@mui/material/FormControl'
+import { Button, Grid, Typography, TextField, FormHelperText, FormControl, FormControlLabel, Radio, RadioGroup, fabClasses } from '@mui/material'
 import {Link} from "react-router-dom"
-import Radio from '@mui/material/Radio'
-import RadioGroup from '@mui/material/RadioGroup'
-import FormControlLabel from '@mui/material/FormControlLabel'
 import {useNavigate} from "react-router-dom"
 
 function CreateRoom() {
@@ -19,20 +11,24 @@ function CreateRoom() {
     guestCanPause: true,
     votesToSkip: defaultVotes
   })
-
+  
   const handleVotesChange = (e) =>{
     setState({
-      guestCanPause: true,
+      guestCanPause: state.guestCanPause,
       votesToSkip: e.target.value
     })
   }
 
   const handleGuestPause = (e) =>{
     setState({
-      guestCanPause: e.target.value === "" && true,
-    })
+      guestCanPause: e.target.value === "" ? true: false,
+      votesToSkip: state.votesToSkip
+    });
+    console.log(e.target.value)
+    console.log(state.guestCanPause)
+
   }
-  
+
   const history = useNavigate();
 
   const handleButtonClicked = ()=>{
@@ -44,7 +40,7 @@ function CreateRoom() {
         guest_pause: state.guestCanPause
       })
     }
-    fetch("apis/create", Params).then((res)=>res.json()).then(data=>{
+    fetch("/apis/create", Params).then((res)=>res.json()).then(data=>{
       history(`/room/${data.code}`)
     }).catch(err=>console.log(err))
   }
@@ -67,7 +63,7 @@ function CreateRoom() {
 
             <RadioGroup row defaultValue='true' onChange={handleGuestPause}>
               <FormControlLabel
-               value="true" 
+               value="true"
                control={<Radio color="primary" />}
                label="play/pause"
                labelPlacement="bottom" />

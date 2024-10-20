@@ -1,14 +1,17 @@
 import React from 'react'
 import {render} from 'react-dom'
-import HomePage from './HomePage'
+import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
+import Landing from './Landing'
 
 
 
 function App() {
   return (
-  <div>
-    <HomePage/>
-  </div>
+   <Router>
+      <Routes>
+        <Route path="/*" element={<Landing />} />
+      </Routes>
+    </Router>
   )
 }
 
