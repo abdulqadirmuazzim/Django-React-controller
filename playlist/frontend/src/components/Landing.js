@@ -4,6 +4,7 @@ import RoomJoin from './RoomJoin'
 import CreateRoom from './CreateRoom'
 import Room from "./Room"
 import Home from './Home'
+import UpdateRoom from './UpdateRoom'
 import { useState } from 'react'
 
 
@@ -57,7 +58,9 @@ function HomePage() {
         <Route path="/create" element={<CreateRoom/>} />
         {/* Room page here */}
         <Route path="/room/:roomcode" element={<Room leaveRoom={leaveRoom} />} />
-
+        {/* Update room page here */}
+        <Route path="/update-room/:roomcode" element={<UpdateRoom />} />
+        
       </Routes>
     </div>
   )

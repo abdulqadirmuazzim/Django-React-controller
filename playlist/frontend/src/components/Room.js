@@ -7,9 +7,8 @@ function Room(props) {
     const [room, setRoomInfo] = useState({
       votesToSkip : 2,
       guestCanPause : false,
-      isHost : false,
-      showSettings: false
-    })
+      isHost : false
+      })
     const navigate = useNavigate()
 
     useEffect(()=>{
@@ -28,52 +27,41 @@ function Room(props) {
           })
         }).catch(err=>console.log(err));
       }, [roomcode])
-    
-    const renderSetting = (value)=>{
+  
+
       return (
-        <Grid item xs={12} align="center">
-           <Button variant='contained' color="primary" onClick={()=> setRoomInfo({...props, showSettings:value})}>
-            Leave Room
-           </Button>
+      <>
+     <Grid container spacing={1}>
+          <Grid item xs={12} align="center">
+            <Typography variant="h4" component="h3">Code: {roomcode}</Typography>
+          </Grid>
+          <Grid item xs={12} align="center">
+            <Typography variant="h5" component="h5">Votes: {room.votesToSkip}</Typography>
+          </Grid>
+          <Grid item xs={12} align="center">
+            <Typography variant="h5" component="h5">Guest can pause: {room.guestCanPause? "Yes": "No"}</Typography>
+          </Grid>
+          <Grid item xs={12} align="center">
+            <Typography variant="h5" component="h5">Host: {room.isHost? "Yes": "No"}</Typography>
+          </Grid>
+          {/* Show grid button if it's the host */}
+          {room.isHost && (
+            <Grid item xs={12} align="center">
+              <Button variant="contained" color="primary" onClick={()=>{navigate(`/update-room/${roomcode}`)}}>
+                Settings
+              </Button>
+            </Grid>
+          )}
+    
+          <Grid item xs={12} align="center">
+            <Button variant="contained"  color="secondary" onClick={props.leaveRoom}>
+                {room.isHost? "Close Room" : "Back"}
+            </Button>
+            
+          </Grid>
         </Grid>
+      </>
       )
     }
-
-    const showButton = () =>{
-      return (
-        <Grid item xs={12} align="center">
-          <Button variant="contained" color="primary" onClick={()=>{
-            setRoomInfo({...props, showSettings:true})
-          }}>
-          </Button>
-        </Grid>
-      )
-    }
-    
-  return (
-    
-    <Grid container spacing={1}>
-      <Grid item xs={12} align="center">
-        <Typography variant="h4" component="h3">Code: {roomcode}</Typography>
-      </Grid>
-      <Grid item xs={12} align="center">
-        <Typography variant="h5" component="h5">Votes: {room.votesToSkip}</Typography>
-      </Grid>
-      <Grid item xs={12} align="center">
-        <Typography variant="h5" component="h5">Guest can pause: {room.guestCanPause? "Yes": "No"}</Typography>
-      </Grid>
-      <Grid item xs={12} align="center">
-        <Typography variant="h5" component="h5">Host: {room.isHost? "Yes": "No"}</Typography>
-      </Grid>
-      <Grid item xs={12} align="center">
-        <Button variant="contained"  color="secondary" onClick={props.leaveRoom}>
-            {room.isHost? "Close Room" : "Back"}
-        </Button>
-        
-      </Grid>
-    </Grid>
-
-  )
-}
 
 export default Room
