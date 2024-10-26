@@ -1,11 +1,10 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Route, Routes, useNavigate} from 'react-router-dom'
 import RoomJoin from './RoomJoin'
 import CreateRoom from './CreateRoom'
 import Room from "./Room"
 import Home from './Home'
 import UpdateRoom from './UpdateRoom'
-import { useState } from 'react'
 
 
 function HomePage() {
@@ -42,8 +41,20 @@ function HomePage() {
       console.log("Room closed", isroom)
       navigate("/")
     })
+  }
 
-    
+  const handleCreateRoom = (e)=>{
+    const Params = {
+      method: "POST",
+      headers: {"Content-Type" : "application/json"},
+      body: JSON.stringify({
+        votes_skip: e.votesToSkip,
+        guest_pause: e.guestCanPause
+      })
+    }
+    fetch("/apis/create", Params).then((res)=>res.json()).then(data=>{
+      navigate(`/room/${data.code}`, {state: {message: "Room created successfully!"}})
+    }).catch(err=>console.log(err))
   }
   
   return (
@@ -55,7 +66,7 @@ function HomePage() {
         {/* Join page here */}
         <Route path="/join" element={<RoomJoin/>} />
         {/* Create room page here */}
-        <Route path="/create" element={<CreateRoom/>} />
+        <Route path="/create" element={<CreateRoom handelSubmit={handleCreateRoom} />} />
         {/* Room page here */}
         <Route path="/room/:roomcode" element={<Room leaveRoom={leaveRoom} />} />
         {/* Update room page here */}

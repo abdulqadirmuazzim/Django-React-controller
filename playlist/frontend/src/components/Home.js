@@ -5,7 +5,7 @@ import { Link, Navigate } from 'react-router-dom'
 function Home(props) {
     console.log(props.room)
     if (props.room){
-    return (<Navigate to={`/room/${props.room}`} replace={true} />)
+    return (<Navigate to={`/room/${props.room}`} />)
     } else{
         
         return (

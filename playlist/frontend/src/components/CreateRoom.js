@@ -1,16 +1,14 @@
 import React from 'react'
 import { useState } from 'react'
 import { Button, Grid, Typography, TextField, FormHelperText, FormControl, FormControlLabel, Radio, RadioGroup} from '@mui/material'
-import {Link} from "react-router-dom"
-import {useNavigate} from "react-router-dom"
 
-function CreateRoom() {
 
-  const defaultVotes = 2
+
+function CreateRoom({votes = 2, guestPause = true, handelSubmit, task = "Create"}) {
   
   const [state, setState] = useState({
-    guestCanPause: true,
-    votesToSkip: defaultVotes
+    guestCanPause: guestPause,
+    votesToSkip: votes
   })
   
   const handleVotesChange = (e) =>{
@@ -27,31 +25,20 @@ function CreateRoom() {
     });
     console.log(e.target.value)
     console.log(state.guestCanPause)
-
   }
 
-  const history = useNavigate();
-
-  const handleButtonClicked = ()=>{
-    const Params = {
-      method: "POST",
-      headers: {"Content-Type" : "application/json"},
-      body: JSON.stringify({
-        votes_skip: state.votesToSkip,
-        guest_pause: state.guestCanPause
-      })
-    }
-    fetch("/apis/create", Params).then((res)=>res.json()).then(data=>{
-      history(`/room/${data.code}`)
-    }).catch(err=>console.log(err))
+  // When user clicks the button
+  const handelButtonClick = () => {
+    handelSubmit(state)
   }
   
+
   return (
     <>
     <Grid container spacing={1}>
       <Grid item xs={12} align="center">
         <Typography component="h4" variant='h4'>
-          Create a Room here
+          {task} Room here
         </Typography>
       </Grid>
       <Grid item xs={12} align="center">
@@ -62,7 +49,7 @@ function CreateRoom() {
             <div> Guest control of playback state</div>
           </FormHelperText>
 
-            <RadioGroup row defaultValue='true' onChange={handleGuestPause}>
+            <RadioGroup row defaultValue={guestPause ? "true": "false"} onChange={handleGuestPause}>
               <FormControlLabel
                value="true"
                control={<Radio color="primary" />}
@@ -84,7 +71,7 @@ function CreateRoom() {
         <TextField 
         required={true} 
         type="number" 
-        defaultValue={defaultVotes} 
+        defaultValue={votes} 
         inputProps={{
           min: 1,
           style: {textAlign: "center"}
@@ -98,12 +85,13 @@ function CreateRoom() {
       </FormControl>
       </Grid>
       <Grid item xs={12} align="center">
-          <Button color="secondary" variant="contained" onClick={handleButtonClicked}>Create A Room</Button>
+          <Button color="secondary" variant="contained" onClick={handelButtonClick}>{task} Room</Button>
         </Grid>
         
     </Grid>
     </>
   )
 }
+
 
 export default CreateRoom
