@@ -5,6 +5,9 @@ name = "pypi"
 
 [packages]
 djangorestframework = "*"
+requests = "*"
+python-dotenv = "*"
+spotipy = "*"
 
 [dev-packages]
 

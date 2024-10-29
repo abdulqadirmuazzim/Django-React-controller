@@ -1,31 +1,27 @@
-import numpy as np
-import fractions as fr
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+import dotenv
+import os
 
-A = [[1, -3, 1], [2, -8, 8], [-6, 3, -15]]
+dotenv.load_dotenv()
 
-A = np.array(A)
+# variables
+client_id = os.environ.get("CLIENT_ID")
+client_secret = os.environ.get("CLIENT_SECRET")
+redirect_url = os.environ.get("REDIRECT_URL")
 
-b = np.array([4, -2, 9])
 
-
-ans = np.linalg.solve(A, b)
-print(ans)
-
-array1 = np.array(
-    [
-        [2, -3, 1],
-        [-2, -1, 4],
-        [0, 2, 2],
-    ]
+sp = spotipy.Spotify(
+    auth_manager=SpotifyOAuth(
+        client_id=client_id,
+        client_secret=client_secret,
+        redirect_uri=redirect_url,
+        scope="user-top-read",
+    )
 )
 
-array2 = np.array([[3, -2, 1], [1, -1, 2], [-2, 2, 0]])
+tracks = sp.current_user_top_tracks(limit=5, time_range="short_term")
 
-ans2 = np.dot(array1, array2)
+track_ids = [track[id] for track in tracks]
 
-print("Second answer", ans2)
-# np.gradient()
-
-matrix = np.array([[2, 4, -2], [-2, 0, 1], [3, -3, 0]])
-inverse = np.linalg.inv(matrix)
-print("inverse is:", inverse)
+print(tracks)

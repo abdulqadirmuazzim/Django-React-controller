@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "track",
     "rest_framework",
     "frontend",
+    "spotify",
 ]
 
 MIDDLEWARE = [
