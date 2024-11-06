@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, HttpResponse
 from rest_framework.views import APIView
 from requests import Request, post
 from rest_framework import status
 from rest_framework.response import Response
-from .util import update_or_create
+from rest_framework.decorators import api_view
+from .util import update_or_create, is_authenticated
 import os
 from dotenv import load_dotenv
 
@@ -11,11 +12,14 @@ load_dotenv()
 
 client_id = os.environ.get("CLIENT_ID")
 client_secret = os.environ.get("CLIENT_SECRET")
-redirect_url = os.environ.get("REDIRECT_URL")
+redirect_url = "http://127.0.0.1:8000/spotify/redirect"
+scopes = (
+    "user-read-playback-state user-modify-playback-state user-read-currently-playing"
+)
 
 
 class AuthURL(APIView):
-    def get(self, req, format=None):
+    def get(self, request, format=None):
         scopes = "user-read-playback-state user-modify-playback-state user-read-currently-playing"
 
         url = (
@@ -32,14 +36,17 @@ class AuthURL(APIView):
             .prepare()
             .url
         )
+
         return Response({"url": url}, status=status.HTTP_200_OK)
 
 
-def spotify_callback(req, format=None):
-    code = req.GET.get("code")
-    error = req.GET.get("error")
+# Getting the access token in the callback function
+def spotify_callback(request, format=None):
+    code = request.GET.get("code")
+    error = request.GET.get("error")
+    print(code)
 
-    response = post(
+    info = post(
         "https://accounts.spotify.com/api/token",
         data={
             "grant_type": "authorization_code",
@@ -48,21 +55,33 @@ def spotify_callback(req, format=None):
             "client_id": client_id,
             "client_secret": client_secret,
         },
-    ).json()
-
-    access_token = response.get("access_token")
-    token_type = response.get("token_type")
-    refresh_token = response.get("refresh_token")
-    expires_in = response.get("expires_in")
-    error = response.get("error")
-    if not req.session.exists(req.session.session_key):
-        req.session.create()
-
-    update_or_create(
-        session_id=req.session.session_key,
-        access_token=access_token,
-        refresh_token=refresh_token,
-        expires_in=expires_in,
-        token_type=token_type,
     )
-    return redirect("frontend:")
+    print(info)
+    if info.ok:
+        response = info.json()
+
+        access_token = response.get("access_token")
+        token_type = response.get("token_type")
+        refresh_token = response.get("refresh_token")
+        expires_in = response.get("expires_in")
+
+        if not request.session.exists(request.session.session_key):
+            request.session.create()
+
+        update_or_create(
+            request.session.session_key,
+            access_token,
+            token_type,
+            expires_in,
+            refresh_token,
+        )
+
+        return redirect("frontend:Home")
+    else:
+        return HttpResponse("Error: Access denied")
+
+
+class IsAuthenticated(APIView):
+    def get(self, request, format=None):
+        is_auth = is_authenticated(self.request.session.session_key)
+        return Response({"status": is_auth}, status=status.HTTP_200_OK)

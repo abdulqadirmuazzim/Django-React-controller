@@ -7,7 +7,8 @@ import CreateRoom from './CreateRoom'
 function UpdateRoom() {
 
   const { roomcode }  = useParams()
-    
+  const csrf = document.cookie.split("; ").find(token => token.startsWith("csrftoken="))?.split("=")[1]
+
   const [state, setState] = useState({
     guestCanPause: null,
     votesToSkip: null
@@ -33,7 +34,7 @@ function UpdateRoom() {
   const handleButtonClicked = (e)=> {
     const Params = {
       method: "PATCH",
-      headers: {"Content-Type" : "application/json"},
+      headers: {"Content-Type" : "application/json", "X-CSRFToken": csrf},
       body: JSON.stringify({
         votes_skip: e.votesToSkip,
         guest_pause: e.guestCanPause,

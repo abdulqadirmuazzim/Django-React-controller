@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views as v
 
+app_name = "frontend"
+
 urlpatterns = [
     path("", v.index, name="Home"),
     path("join", v.index),

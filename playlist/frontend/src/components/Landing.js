@@ -31,10 +31,12 @@ function HomePage() {
   },
   [])
 
+  const csrf = document.cookie.split("; ").find(token => token.startsWith("csrftoken="))?.split("=")[1]
+
   const leaveRoom = ()=>{
         const Params = {
       method: "POST",
-      headers: {"Content-Type" : "application/json"},
+      headers: {"Content-Type" : "application/json", "X-CSRFToken": csrf},
     }
     fetch("/apis/leave-room", Params).then(() =>{ 
       setIsroom({room:null})
@@ -46,7 +48,7 @@ function HomePage() {
   const handleCreateRoom = (e)=>{
     const Params = {
       method: "POST",
-      headers: {"Content-Type" : "application/json"},
+      headers: {"Content-Type" : "application/json", "X-CSRFToken": csrf},
       body: JSON.stringify({
         votes_skip: e.votesToSkip,
         guest_pause: e.guestCanPause

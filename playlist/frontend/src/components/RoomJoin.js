@@ -13,11 +13,12 @@ function RoomJoin() {
   }
 
   let history = useNavigate();
+  const csrf = document.cookie.split("; ").find(token => token.startsWith("csrftoken="))?.split("=")[1]
 
   const handleJoinRoom = () => {
       const Params = {
       method: "POST",
-      headers: {"Content-Type" : "application/json"},
+      headers: {"Content-Type" : "application/json", "X-CSRFToken": csrf },
       body: JSON.stringify({
         code: textInfo.roomCode,
       })

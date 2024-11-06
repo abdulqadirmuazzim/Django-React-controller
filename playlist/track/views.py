@@ -49,7 +49,7 @@ class GetRoom(APIView):
         )  # use .get otherwise you'll get MultivalueDictKey error
         if code:
             room = Room.objects.filter(code=code)
-            if len(room) > 0:
+            if room.exists():
                 data = RoomSerializer(room[0]).data
                 data["is_host"] = self.request.session.session_key == room[0].host
                 return Response(data, status=status.HTTP_200_OK)
@@ -109,8 +109,18 @@ class UserinRoom(APIView):
         if not self.request.session.exists(self.request.session.session_key):
             self.request.session.create()
 
-        data = {"code": self.request.session.get("room_code")}
-        return JsonResponse(data, status=status.HTTP_200_OK)
+        code = self.request.session.get("room_code")
+        room_obj = Room.objects.filter(code=code)
+        print(code)
+
+        if room_obj.exists():
+            print(room_obj[0])
+            data = {"code": code}
+            return JsonResponse(data, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                "Not found: Room code doesn't exist", status=status.HTTP_404_NOT_FOUND
+            )
 
 
 class LeaveRoom(APIView):

@@ -16,8 +16,15 @@ function Room(props) {
     const [message, setMessage] = useState("")
     const navigate = useNavigate()
     const location = useLocation()
+    const [spotifyAuth, setSpotifyAuth] = useState(false)
+
+    const csrf = document.cookie.split("; ").find(token => token.startsWith("csrftoken="))?.split("=")[1]
+    const handleLeaving = ()=>{
+      props.leaveRoom(csrf)
+    }
     
     useEffect(()=>{
+      // Get room details
         fetch(`/apis/get-room?code=${roomcode}`).then((res) => {
           if (!res.ok){
             navigate("/")
@@ -25,6 +32,7 @@ function Room(props) {
             return res.json()
           }
         }).then((data) => {
+          // For making the pop up message disappear
           if (location.state && location.state.message){
             setMessage(location.state.message)
             setTimeout(() => setMessage(""), 3000)
@@ -36,8 +44,29 @@ function Room(props) {
             isHost: data.is_host
           })
           setPending(false)
-        }).catch(err=>console.log(err));
+        }).catch(err=>{
+          console.log(err)
+        });
       }, [roomcode])
+
+      // spotify authentication logic
+      useEffect(()=>{
+        if (room.isHost){
+          fetch("/spotify/is-authenticated")
+          .then(res => res.json())
+          .then(data => {
+            setSpotifyAuth(data.status)
+            console.log(data.status, spotifyAuth)
+          })
+          if (!spotifyAuth){
+            fetch("/spotify/get-auth-url")
+            .then(res => res.json())
+            .then(data=>{
+              window.location.replace(data.url)
+            }).catch(err => console.log(err))
+          }
+        }
+      }, [room.isHost])
   
       if (pending){
         return (
@@ -77,7 +106,7 @@ function Room(props) {
           )}
     
           <Grid item xs={12} align="center">
-            <Button variant="contained"  color="secondary" onClick={props.leaveRoom}>
+            <Button variant="contained"  color="secondary" onClick={handleLeaving}>
                 {room.isHost? "Close Room" : "Back"}
             </Button>
             

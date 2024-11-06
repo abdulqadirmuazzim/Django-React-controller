@@ -8,6 +8,7 @@ djangorestframework = "*"
 requests = "*"
 python-dotenv = "*"
 spotipy = "*"
+whitenoise = "*"
 
 [dev-packages]
 

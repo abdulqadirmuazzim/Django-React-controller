@@ -8,20 +8,8 @@ dotenv.load_dotenv()
 # variables
 client_id = os.environ.get("CLIENT_ID")
 client_secret = os.environ.get("CLIENT_SECRET")
-redirect_url = os.environ.get("REDIRECT_URL")
+redirect_url = "http://127.0.0.1:8000/spotify/redirect"
 
-
-sp = spotipy.Spotify(
-    auth_manager=SpotifyOAuth(
-        client_id=client_id,
-        client_secret=client_secret,
-        redirect_uri=redirect_url,
-        scope="user-top-read",
-    )
+scope = (
+    "user-read-playback-state user-modify-playback-state user-read-currently-playing"
 )
-
-tracks = sp.current_user_top_tracks(limit=5, time_range="short_term")
-
-track_ids = [track[id] for track in tracks]
-
-print(tracks)
