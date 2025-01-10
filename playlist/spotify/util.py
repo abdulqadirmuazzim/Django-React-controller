@@ -2,7 +2,7 @@ from .models import SpotifyToken
 from django.utils import timezone
 from datetime import timedelta
 from requests import post
-from spotipy.oauth2 import SpotifyOAuth
+import requests as req
 import os
 import dotenv
 
@@ -11,16 +11,8 @@ dotenv.load_dotenv()
 CLIENT_ID = os.environ.get("CLIENT_ID")
 CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
 REDIRECT_URL = os.environ.get("REDIRECT_URL")
-scopes = (
-    "user-read-playback-state user-modify-playback-state user-read-currently-playing"
-)
 
-sp_auth = SpotifyOAuth(
-    client_id=CLIENT_ID,
-    client_secret=CLIENT_SECRET,
-    redirect_uri=REDIRECT_URL,
-    scope=scopes,
-)
+Base_url = "https://api.spotify.com/v1/me/"
 
 
 def get_token(session_id):
@@ -80,5 +72,47 @@ def refresh_token(session_id):
     access_token = response.get("access_token")
     token_type = response.get("token_type")
     expires_in = response.get("expires_in")
-    refresh_token = response.get("refresh_token")
+
+    print("Response type", response)
+    print("Refesh Token:", response.get("refresh_token"))
+    if not refresh_token:
+        get_token(session_id).delete()
+        update_or_create(
+            session_id, access_token, token_type, expires_in, refresh_token
+        )
+
     update_or_create(session_id, access_token, token_type, expires_in, refresh_token)
+
+
+def spotify_request(session_id, endpoint: str, post_=False, put_=False):
+    tokens = get_token(session_id)
+    header = {
+        "Content-type": "application/json",
+        "Authorization": f"Bearer {tokens.access}",
+    }
+    if post_:
+        response = post(Base_url + endpoint, headers=header)
+
+    elif put_:
+        response = req.put(Base_url + endpoint, headers=header)
+
+    else:
+        response = req.get(Base_url + endpoint, headers=header)
+
+    try:
+        return response.json()
+    except:
+        return {
+            "Error": "Something went wrong, maybe try checking your connection",
+            "Status": response.status_code,
+        }
+
+
+# function to play a song
+def play_song(session_id):
+    return spotify_request(session_id, "player/play", put_=True)
+
+
+# function to pause a song
+def pause_song(session_id):
+    return spotify_request(session_id, "player/pause", put_=True)

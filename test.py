@@ -1,15 +1,30 @@
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth
-import dotenv
-import os
+artists = [
+    {
+        "external_urls": {
+            "spotify": "https://open.spotify.com/artist/4kpoYPOSgCl2jYvCm6Cp05"
+        },
+        "href": "https://api.spotify.com/v1/artists/4kpoYPOSgCl2jYvCm6Cp05",
+        "id": "4kpoYPOSgCl2jYvCm6Cp05",
+        "name": "Muhammad Al Muqit",
+        "type": "artist",
+        "uri": "spotify:artist:4kpoYPOSgCl2jYvCm6Cp05",
+    },
+    {
+        "external_urls": {
+            "spotify": "https://open.spotify.com/artist/033yJpOqIQr5XW6KbvBljo"
+        },
+        "href": "https://api.spotify.com/v1/artists/033yJpOqIQr5XW6KbvBljo",
+        "id": "033yJpOqIQr5XW6KbvBljo",
+        "name": "Hamoud Al Qahtani",
+        "type": "artist",
+        "uri": "spotify:artist:033yJpOqIQr5XW6KbvBljo",
+    },
+]
 
-dotenv.load_dotenv()
+artist_string = ""
+for i, artist in enumerate(artists):
+    name = artist.get("name")
+    artist_string += f"{name}, "
+    print(name)
 
-# variables
-client_id = os.environ.get("CLIENT_ID")
-client_secret = os.environ.get("CLIENT_SECRET")
-redirect_url = "http://127.0.0.1:8000/spotify/redirect"
-
-scope = (
-    "user-read-playback-state user-modify-playback-state user-read-currently-playing"
-)
+print(artist_string)

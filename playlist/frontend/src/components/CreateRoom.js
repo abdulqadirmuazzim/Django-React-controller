@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
 import { Button, Grid, Typography, TextField, FormHelperText, FormControl, FormControlLabel, Radio, RadioGroup} from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
 
 
@@ -10,6 +11,7 @@ function CreateRoom({votes = 2, guestPause = true, handelSubmit, task = "Create"
     guestCanPause: guestPause,
     votesToSkip: votes
   })
+  const navigate = useNavigate()
   
   const handleVotesChange = (e) =>{
     setState((prevState) => ({
@@ -86,6 +88,9 @@ function CreateRoom({votes = 2, guestPause = true, handelSubmit, task = "Create"
       </Grid>
       <Grid item xs={12} align="center">
           <Button color="secondary" variant="contained" onClick={handelButtonClick}>{task} Room</Button>
+        </Grid>
+      <Grid item xs={12} align="center">
+          <Button color="primary" variant="contained" onClick={()=>{navigate(-1)}}>Back</Button>
         </Grid>
         
     </Grid>

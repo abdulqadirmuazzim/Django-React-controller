@@ -1,10 +1,10 @@
-from django.shortcuts import render, HttpResponse
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from .models import Room
 from .serializer import RoomSerializer, CreateRoomSerializer, UpdateRoomSerializer
 from rest_framework.response import Response
 from django.http import JsonResponse
+from spotify.models import SpotifyToken
 
 
 # Create your views here.
@@ -131,9 +131,11 @@ class LeaveRoom(APIView):
             host_id = self.request.session.session_key
 
             rooms = Room.objects.filter(host=host_id)
-            if len(rooms) > 0:
+            spotify_token = SpotifyToken.objects.filter(user=host_id)
+            if rooms.exists() and spotify_token.exists():
                 room = rooms[0]
                 print(host_id == room.host)
+                spotify_token[0].delete()
                 room.delete()
                 return Response(
                     {"Message": "Room successfully deleted"}, status=status.HTTP_200_OK
