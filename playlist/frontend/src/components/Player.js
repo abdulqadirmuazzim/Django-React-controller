@@ -4,15 +4,14 @@ import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 
-function Player({imgUrl, title, artist, time, duration, is_playing}) {
+function Player({imgUrl, title, artist, time, duration, is_playing, current_votes, required_votes}) {
 
-    const [timeLeft, setTimeLeft] = useState(null)
-    
-    // const timeLeft = (time/duration) * 100
+    const csrfToken = document.cookie.split("; ").find(token => token.startsWith("csrftoken="))?.split("=")[1]
+
     // request params
     var params = {
         method: "PUT",
-        headers: {"Content-Type": "application/json"}
+        headers: {"Content-Type": "application/json", "X-CSRFToken": csrfToken}
     }
 
     const playSong = () =>{
@@ -21,6 +20,14 @@ function Player({imgUrl, title, artist, time, duration, is_playing}) {
 
     const pauseSong = () =>{
         fetch("/spotify/pause", params)
+    }
+
+    const skipSong = () => {
+        params = {
+            method: "POST",
+            headers: {"Content-Type": "application/json", "X-CSRFToken": csrfToken}
+        }
+        fetch("/spotify/skip", params)
     }
 
   return (
@@ -41,12 +48,14 @@ function Player({imgUrl, title, artist, time, duration, is_playing}) {
                 <div>
                     <IconButton onClick={() => {is_playing ? pauseSong() : playSong()}}>
                         {is_playing ? <PauseIcon /> : <PlayArrowIcon />}
-                        <SkipNextIcon />
                     </IconButton>
+                    <IconButton>
+                        <SkipNextIcon onClick={()=>skipSong()} /> 
+                    </IconButton> {"Votes to skip song:"} {current_votes} / {required_votes}
                 </div>
             </Grid>
         </Grid>
-        <LinearProgress color="secondary" variant="determinant" value={(time/duration) * 100} />
+        {/* <LinearProgress color="secondary" variant="determinant" value={(time/duration) * 100} /> */}
         <div className='w-100' style={{"height": "7px", "backgroundColor": "aliceblue"}}>
             <div className='h-100' style={{"width": `${(time/duration) * 100}%`, "backgroundColor": "blueviolet"}}/> 
         </div>

@@ -49,7 +49,12 @@ function Room(props) {
     // Get the song info
     function getSong(){
         fetch("/spotify/current-song").then((res)=>{
-          return res.ok ? res.json() : {"error": "There was an error fetching the song"}
+         if (res.ok){
+          return res.json()
+         }else{
+          navigate("/")
+          return {"error" : "There was an error fetching song"}
+        }
         }).then(data => {
           setRoomInfo((prevInfo) => ({...prevInfo, song: data}))
           console.log(data)
@@ -90,8 +95,7 @@ function Room(props) {
             getSong()
             console.log("Song retrieved")
           }, 3000)
-          setIntervalId(interval)
-
+          roomcode && setIntervalId(interval)
         }).catch(err=>{
           console.log(err)
         });
@@ -126,7 +130,9 @@ function Room(props) {
                artist={room.song.artists}
                time={room.song.time}
                duration={room.song.duration}
-               is_playing={room.song.is_playing} />)}
+               is_playing={room.song.is_playing}
+               current_votes={room.song.votes}
+               required_votes={room.song.required_votes} />)}
 
           {/* Show grid button if it's the host */}
           {room.isHost && (
