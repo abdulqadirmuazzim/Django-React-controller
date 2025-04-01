@@ -1,4 +1,4 @@
 playlist/frontend/node_modules
 playlist/spotify/.env
-.env
 .cache
+ignore
