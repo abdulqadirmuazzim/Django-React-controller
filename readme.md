@@ -30,11 +30,11 @@ The **Django-React Music Playlist Controller** is a full-stack web application t
 1. **Clone the repository:**
    ```sh
    git clone https://github.com/yourusername/django-react-music-controller.git
-  
+  ```
 2. Install Python dependencies:
    ```sh
    pip install -r Pipfile
-   ```  ```
+   ```  
 3. Navigate to the backend directory:
    ```sh
    cd playlist
